@@ -57,8 +57,8 @@ for iter in tqdm(range(NUM_ITERS)):
                 x_encoded[i:i+CHUNK_SIZE], dir_encoded[i:i+CHUNK_SIZE], \
                 z_vals[i:i+CHUNK_SIZE], dirs[i:i+CHUNK_SIZE])[0] 
             for i in range(0, x.shape[0], CHUNK_SIZE)], dim=0)
+            
     optimizer.zero_grad()
-
     img_loss = img2mse(rgb_map, y)
     loss = img_loss
     psnr = mse2psnr(img_loss.cpu())

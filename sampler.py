@@ -1,5 +1,6 @@
 import numpy as np
-import torch 
+import torch
+
 
 class UniformSampler():
     def __init__(self, near, far):
@@ -15,13 +16,14 @@ class UniformSampler():
 
         if random:
             # get intervals between samples
-            mids = .5 * (z_vals[...,1:] + z_vals[...,:-1])
-            upper = torch.cat([mids, z_vals[...,-1:]], -1)
-            lower = torch.cat([z_vals[...,:1], mids], -1)
+            mids = .5 * (z_vals[..., 1:] + z_vals[..., :-1])
+            upper = torch.cat([mids, z_vals[..., -1:]], -1)
+            lower = torch.cat([z_vals[..., :1], mids], -1)
             # stratified samples in those intervals
             t_rand = torch.rand(z_vals.shape)
 
             z_vals = lower + (upper - lower) * t_rand
 
-        pts = origins[...,None,:] + dirs[...,None,:] * z_vals[...,:,None] # [N_rays, N_samples, 3]
+        pts = origins[..., None, :] + dirs[..., None, :] * \
+            z_vals[..., :, None]  # [N_rays, N_samples, 3]
         return pts, z_vals

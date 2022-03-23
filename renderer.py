@@ -1,8 +1,10 @@
 import torch
 import torch.nn.functional as F
+
 class VolumeRenderer():
     def __init__(self):
         self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
+        
     @staticmethod
     def alpha_activate_fn(alpha, dists):
         return 1.-torch.exp(-F.relu(alpha)*dists)

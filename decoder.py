@@ -4,8 +4,9 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+
 class NeRF(nn.Module):
-    def __init__(self, x_dim, dir_dim, D=8, W=256,skips=[4]):
+    def __init__(self, x_dim, dir_dim, D=8, W=256, skips=[4]):
         super().__init__()
         self.x_dim = x_dim
         self.dir_dim = dir_dim
@@ -15,13 +16,13 @@ class NeRF(nn.Module):
 
         self.x_linears = nn.ModuleList(
             [nn.Linear(x_dim, W)] + [nn.Linear(W, W) if i not in skips else nn.Linear(W + x_dim, W) for i in range(D-1)])
-        
+
         self.dir_linears = nn.ModuleList([nn.Linear(dir_dim + W, W//2)])
 
         self.feature_linear = nn.Linear(W, W)
         self.alpha_linear = nn.Linear(W, 1)
         self.rgb_linear = nn.Linear(W//2, 3)
-        
+
     def forward(self, x, dir):
         h = x
         for i, l in enumerate(self.x_linears):
@@ -34,7 +35,7 @@ class NeRF(nn.Module):
         feature = self.feature_linear(h)
 
         h = torch.cat([feature, dir], -1)
-    
+
         for i, l in enumerate(self.dir_linears):
             h = self.dir_linears[i](h)
             h = F.relu(h)
@@ -42,13 +43,13 @@ class NeRF(nn.Module):
 
         output = torch.cat([alpha, rgb], dim=-1)
         return output
-    
-    def batch_forward(self, x, dir, chunk):
-        '''
-        forward() in smaller batch to avoid OOM
-        '''
-        output = torch.cat(
-            [self(x[i:i+chunk], dir[i:i+chunk]) for i in range(0, x.shape[0], chunk)],
-            dim=0)
-        return output
 
+    # def batch_forward(self, x, dir, chunk):
+    #     '''
+    #     forward() in smaller batch to avoid OOM
+    #     '''
+    #     output = torch.cat(
+    #         [self(x[i:i+chunk], dir[i:i+chunk])
+    #          for i in range(0, x.shape[0], chunk)],
+    #         dim=0)
+    #     return output
