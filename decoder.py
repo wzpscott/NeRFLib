@@ -5,7 +5,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 
-class NeRF(nn.Module):
+class NeRFDecoder(nn.Module):
     def __init__(self, x_dim, dir_dim, D=8, W=256, skips=[4]):
         super().__init__()
         self.x_dim = x_dim

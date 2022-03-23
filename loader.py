@@ -23,7 +23,7 @@ def get_rays(H, W, K, c2w):
 
 
 class BlenderLoader():
-    def __init__(self, imgs_path, poses_path):
+    def __init__(self, imgs_path, poses_path, debug=False):
         imgs = []
         poses = []
         with open(poses_path, 'r') as fp:
@@ -46,6 +46,9 @@ class BlenderLoader():
         H, W = imgs[0].shape[:2]
         camera_angle_x = float(poses_raw['camera_angle_x'])
         focal = .5 * W / np.tan(.5 * camera_angle_x)
+        if debug:
+            focal = focal / 10
+            
         K = torch.Tensor([
             [focal, 0, 0.5*W],
             [0, focal, 0.5*H],

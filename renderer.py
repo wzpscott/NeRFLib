@@ -27,6 +27,6 @@ class VolumeRenderer():
         rgb_map = torch.sum(weights[...,None] * rgb, -2)  # [N_rays, 3]
         depth_map = torch.sum(weights * z_vals, -1)
 
-        return rgb_map, depth_map
+        return rgb_map, weights, depth_map
         
         
